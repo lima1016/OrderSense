@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.lima'
 version = '0.0.1-SNAPSHOT'
-description = 'rider-service'
+description = 'payment-service'
 
 java {
     toolchain {
@@ -20,10 +20,15 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
-    // 위치 기반 서비스
-    implementation 'org.locationtech.jts:jts-core:1.19.0'
-    // 실시간 위치 업데이트 (WebSocket)
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    // 외부 결제 API 연동
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // 암호화
+    implementation 'org.springframework.security:spring-security-crypto'
+
+    // 재시도 로직
+    implementation 'org.springframework.retry:spring-retry'
+    implementation 'org.springframework:spring-aspects'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

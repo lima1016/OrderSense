@@ -1,0 +1,8 @@
+rootProject.name = 'OrderSense'
+
+include 'order-service'
+include 'rider-service'
+include 'restaurant-service'
+include 'payment-service'
+include 'action-executor-service'
+include 'api-gateway'
