@@ -1,5 +1,23 @@
 # OrderSense: 배달 플랫폼 지능형 운영 시스템
 
+Kafka UI - Kafka 토픽 모니터링
+http://localhost:8090
+
+Kibana - 로그 시각화
+http://localhost:5601
+
+Grafana - 대시보드 (admin/admin123)
+http://localhost:3000 
+
+Prometheus - 메트릭 수집
+http://localhost:9090
+
+PostgreSQL - DB (ordersense/ordersense123)
+localhost:5432
+
+Redis - 캐시
+localhost:6379
+
 ## 프로젝트 개요
 
 배달 플랫폼의 비즈니스 메트릭을 실시간으로 모니터링하고, 이상을 탐지하며, 원인을 분석하여 자동으로 대응하는 지능형 운영 시스템
@@ -147,82 +165,4 @@ sequenceDiagram
 | Docker | - | 컨테이너화 |
 | Kubernetes | - | 오케스트레이션 |
 
-```mermaid
-graph TB
-    subgraph Clients["클라이언트 (웹)"]
-        CustomerWeb[고객 웹]
-        RiderWeb[라이더 웹]
-        RestaurantWeb[가맹점 웹]
-        AdminWeb[운영자 웹]
-    end
-
-    subgraph Gateway["API Layer"]
-        APIGateway[API Gateway<br/>Spring Cloud]
-    end
-
-    subgraph JavaServices["Java 21 마이크로서비스"]
-        OrderSvc[Order Service]
-        RiderSvc[Rider Service]
-        RestaurantSvc[Restaurant Service]
-        PaymentSvc[Payment Service]
-        ActionExecutor[Action Executor]
-    end
-
-    subgraph Messaging["메시징"]
-        Kafka[Apache Kafka<br/>orders, deliveries, riders<br/>restaurants, payments<br/>anomalies, actions]
-    end
-
-    subgraph Analytics["Python 분석 엔진"]
-        AnomalyDetection[이상 탐지 모델]
-        RootCause[원인 분류 모델]
-        ChurnPrediction[이탈 예측 모델]
-    end
-
-    subgraph Monitoring["모니터링 & 로깅"]
-        ELK[ELK Stack<br/>Elasticsearch + Logstash + Kibana]
-        Grafana[Grafana Dashboard]
-        Sentry[Sentry<br/>에러 트래킹]
-    end
-
-    subgraph Storage["데이터 저장소"]
-        PostgreSQL[(PostgreSQL<br/>주문/가맹점)]
-        Redis[(Redis<br/>캐싱)]
-        TimescaleDB[(TimescaleDB<br/>시계열)]
-    end
-
-    subgraph Infrastructure["인프라"]
-        K8s[Docker + Kubernetes]
-    end
-
-    Clients --> APIGateway
-    APIGateway --> JavaServices
-    
-    OrderSvc --> Kafka
-    RiderSvc --> Kafka
-    RestaurantSvc --> Kafka
-    PaymentSvc --> Kafka
-    
-    Kafka --> Analytics
-    Kafka --> ELK
-    
-    Analytics --> Kafka
-    Analytics --> ActionExecutor
-    
-    ActionExecutor --> OrderSvc
-    ActionExecutor --> RiderSvc
-    ActionExecutor --> RestaurantSvc
-    
-    JavaServices --> PostgreSQL
-    JavaServices --> Redis
-    Analytics --> TimescaleDB
-    
-    ELK --> Grafana
-    TimescaleDB --> Grafana
-    
-    JavaServices --> Sentry
-    Analytics --> Sentry
-    
-    K8s -.-> JavaServices
-    K8s -.-> Analytics
-    K8s -.-> Monitoring
-```
+![img.png](img.png)
