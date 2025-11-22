@@ -94,7 +94,7 @@ services:
       - "5044:5044"
       - "9600:9600"
     volumes:
-      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./conf/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     networks:
       - ordersense-network
 
@@ -132,7 +132,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./conf/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     networks:
       - ordersense-network
