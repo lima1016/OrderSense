@@ -1,57 +1,72 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.7'
-    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.springframework.boot' version '3.5.7' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
 }
 
-group = 'com.ordersense'
-version = '0.0.1-SNAPSHOT'
+allprojects {
+    group = 'com.ordersense'
+    version = '0.0.1-SNAPSHOT'
 
-java {
-    sourceCompatibility = '21'
+    repositories {
+        mavenCentral()
+    }
 }
 
-repositories {
-    mavenCentral()
-}
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
 
-dependencies {
-    // Spring Boot 기본
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    java {
+        sourceCompatibility = '21'
+    }
 
-    // Kafka
-    implementation 'org.springframework.kafka:spring-kafka'
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
 
-    // Database
-    runtimeOnly 'org.postgresql:postgresql'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // 모든 서비스 공통 의존성
+    dependencies {
+        // Spring Boot 기본
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    // Monitoring
-    implementation 'io.sentry:sentry-spring-boot-starter-jakarta:7.0.0'
-    implementation 'io.micrometer:micrometer-registry-prometheus'
+        // Kafka
+        implementation 'org.springframework.kafka:spring-kafka'
 
-    // Logging (ELK)
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+        // Database
+        runtimeOnly 'org.postgresql:postgresql'
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-    // Utility
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+        // Monitoring
+        implementation 'io.sentry:sentry-spring-boot-starter-jakarta:7.0.0'
+        implementation 'io.micrometer:micrometer-registry-prometheus'
 
-    // OpenAPI 문서화
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+        // Logging (ELK)
+        implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
-    // 테스트
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
-    testImplementation 'org.testcontainers:postgresql:1.19.3'
-    testImplementation 'org.testcontainers:kafka:1.19.3'
-}
+        // Utility
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+        annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
-tasks.named('test') {
-    useJUnitPlatform()
+        // OpenAPI 문서화
+        implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+
+        // 테스트
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.springframework.kafka:spring-kafka-test'
+        testImplementation 'org.testcontainers:postgresql:1.19.3'
+        testImplementation 'org.testcontainers:kafka:1.19.3'
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
 }
