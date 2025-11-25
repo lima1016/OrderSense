@@ -1,31 +1,18 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.7'
-	id 'io.spring.dependency-management' version '1.1.7'
-}
-
-group = 'com.lima'
-version = '0.0.1-SNAPSHOT'
-description = 'order-service'
-
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
-}
-
-repositories {
-	mavenCentral()
+    id "io.sentry.jvm.gradle" version "5.12.2"
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+sentry {
+    // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
+    // This enables source context, allowing you to see your source
+    // code as part of your stack traces in Sentry.
+    includeSourceContext = true
+
+    org = "student-o6k"
+    projectName = "java-spring"
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }

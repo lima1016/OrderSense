@@ -27,7 +27,6 @@ services:
     networks:
       - ordersense-network
 
-  # Kafka (KRaft mode - Zookeeper 불필요)
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: ordersense-kafka
