@@ -44,26 +44,26 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
         // Monitoring
-        implementation 'io.sentry:sentry-spring-boot-starter-jakarta:7.0.0'
+        implementation 'io.sentry:sentry-spring-boot-starter-jakarta:8.19.1'
         implementation 'io.micrometer:micrometer-registry-prometheus'
 
         // Logging (ELK)
-        implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+        implementation 'net.logstash.logback:logstash-logback-encoder:9.0'
 
         // Utility
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
-        implementation 'org.mapstruct:mapstruct:1.5.5.Final'
-        annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+        implementation 'org.mapstruct:mapstruct:1.6.3.Final'
+        annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3.Final'
 
         // OpenAPI 문서화
-        implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+        implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14'
 
         // 테스트
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'org.springframework.kafka:spring-kafka-test'
-        testImplementation 'org.testcontainers:postgresql:1.19.3'
-        testImplementation 'org.testcontainers:kafka:1.19.3'
+        testImplementation 'org.testcontainers:postgresql:2.0.2'
+        testImplementation 'org.testcontainers:kafka:2.0.2'
     }
 
     tasks.named('test') {

@@ -14,5 +14,5 @@ sentry {
 
     org = "student-o6k"
     projectName = "java-spring"
-    authToken = System.getenv("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")
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }
