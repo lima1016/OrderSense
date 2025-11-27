@@ -28,7 +28,6 @@ subprojects {
         }
     }
 
-    // 모든 서비스 공통 의존성
     dependencies {
         // Spring Boot 기본
         implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -44,7 +43,8 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
         // Monitoring
-        implementation 'io.sentry:sentry-spring-boot-starter-jakarta:8.19.1'
+        implementation platform('io.sentry:sentry-bom:8.22.0')
+        implementation 'io.sentry:sentry-spring-boot-starter-jakarta'
         implementation 'io.micrometer:micrometer-registry-prometheus'
 
         // Logging (ELK)
@@ -53,8 +53,8 @@ subprojects {
         // Utility
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
-        implementation 'org.mapstruct:mapstruct:1.6.3.Final'
-        annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3.Final'
+        implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+        annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
         // OpenAPI 문서화
         implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14'
@@ -62,7 +62,7 @@ subprojects {
         // 테스트
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'org.springframework.kafka:spring-kafka-test'
-        testImplementation 'org.testcontainers:postgresql:2.0.2'
+        testImplementation 'org.testcontainers:postgresql:1.19.3'
         testImplementation 'org.testcontainers:kafka:2.0.2'
     }
 
