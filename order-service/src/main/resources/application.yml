@@ -39,7 +39,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       auto-offset-reset: earliest
       properties:
-        spring.json.trusted.packages: "com.lima.orderservice,com.ordersense"
+        spring.json.trusted.packages: "com.lima.orderservice"
 
 # Actuator 설정 (Prometheus 메트릭)
 management:
@@ -47,9 +47,9 @@ management:
     web:
       exposure:
         include: health,info,prometheus,metrics
-  metrics:
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: true
 
 # Logging 설정 (ELK)
@@ -58,13 +58,13 @@ logging:
     com.ordersense: DEBUG
     org.springframework.kafka: INFO
     org.hibernate.SQL: DEBUG
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
-  file:
-    name: logs/order-service.log
+#  file:
+#    name: logs/order-service.log
 
 # Sentry 설정 (에러 트래킹)
 sentry:
   dsn: ${SENTRY_DSN}
   traces-sample-rate: 1.0
   environment: ${ENVIRONMENT:local}
+  shutdown-timeout: 2000  # 밀리초
+  enable-deduplication: true
