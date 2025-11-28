@@ -63,7 +63,7 @@ subprojects {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'org.springframework.kafka:spring-kafka-test'
         testImplementation 'org.testcontainers:postgresql:1.19.3'
-        testImplementation 'org.testcontainers:kafka:2.0.2'
+        testImplementation 'org.testcontainers:kafka:1.19.3'
     }
 
     tasks.named('test') {
