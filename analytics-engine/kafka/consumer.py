@@ -51,7 +51,7 @@ class KafkaEventConsumer:
         self._consumer = Consumer({
             "bootstrap.servers": config.KAFKA_BOOTSTRAP_SERVERS,
             "group.id": config.KAFKA_GROUP_ID,
-            "auto.offset.reset": "latest",
+            "auto.offset.reset": "earliest",
             "enable.auto.commit": True,
         })
         self._consumer.subscribe(config.CONSUME_TOPICS)

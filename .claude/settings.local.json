@@ -15,7 +15,12 @@
       "Bash(netstat:*)",
       "Bash(taskkill:*)",
       "Bash(docker exec:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(cp:*)",
+      "Bash(rm:*)",
+      "Bash(docker restart:*)",
+      "Bash(docker ps:*)",
+      "Bash(bash:*)"
     ]
   }
 }

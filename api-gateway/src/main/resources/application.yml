@@ -42,12 +42,14 @@ spring:
           predicates:
             - Path=/api/analytics/**
 
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOrigins: "*"
-            allowedMethods: "*"
-            allowedHeaders: "*"
+      server:
+        webflux:
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOrigins: "*"
+                allowedMethods: "*"
+                allowedHeaders: "*"
 
 jwt:
   secret: ${JWT_SECRET:ordersense-jwt-secret-key-for-development-only-must-be-at-least-256-bits-long!!}

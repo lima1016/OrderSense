@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     (data: AuthResponse) => {
       setAuth(data);
       setUser({ email: data.email, name: data.name, role: data.role });
-      router.push("/");
+      router.push("/dashboard");
     },
     [router]
   );

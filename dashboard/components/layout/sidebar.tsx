@@ -7,10 +7,10 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/components/providers/auth-provider";
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/orders", label: "Orders", icon: ShoppingBag },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/monitoring", label: "Monitoring", icon: Activity },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard/orders", label: "Orders", icon: ShoppingBag },
+  { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/dashboard/monitoring", label: "Monitoring", icon: Activity },
 ];
 
 export function Sidebar() {
@@ -36,7 +36,7 @@ export function Sidebar() {
       <nav className="flex-1 px-3 space-y-0.5">
         <p className="px-3 pt-4 pb-2 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Menu</p>
         {navItems.map(({ href, label, icon: Icon }) => {
-          const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
+          const active = href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(href);
           return (
             <Link
               key={href}
