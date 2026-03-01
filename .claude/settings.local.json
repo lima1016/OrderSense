@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(./gradlew compileJava:*)",
+      "Bash(./gradlew :payment-service:compileJava:*)",
+      "Bash(npx next:*)",
+      "Bash(ls:*)",
+      "WebSearch",
+      "Bash(./gradlew :api-gateway:compileJava:*)",
+      "Bash(grep:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm run:*)",
+      "Bash(tasklist:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(docker exec:*)",
+      "Bash(curl:*)",
+      "Bash(cp:*)",
+      "Bash(rm:*)",
+      "Bash(docker restart:*)",
+      "Bash(docker ps:*)",
+      "Bash(bash:*)"
+    ]
+  }
+}

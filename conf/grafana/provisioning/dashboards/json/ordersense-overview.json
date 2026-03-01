@@ -1,0 +1,268 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "ordersense-overview",
+    "title": "OrderSense - 배달 플랫폼 모니터링",
+    "tags": ["ordersense"],
+    "timezone": "browser",
+    "refresh": "10s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "templating": {
+      "list": [
+        {
+          "name": "instance",
+          "type": "query",
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+          "query": "label_values(up{job=\"ordersense-services\"}, instance)",
+          "refresh": 2,
+          "includeAll": true,
+          "multi": true,
+          "current": { "selected": true, "text": "All", "value": "$__all" }
+        }
+      ]
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "서비스 상태 (UP/DOWN)",
+        "type": "stat",
+        "gridPos": { "h": 4, "w": 24, "x": 0, "y": 0 },
+        "datasource": { "type": "prometheus" },
+        "targets": [
+          {
+            "expr": "up{job=\"ordersense-services\"}",
+            "legendFormat": "{{instance}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              { "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "UP", "color": "green" } } }
+            ],
+            "thresholds": {
+              "steps": [
+                { "value": null, "color": "red" },
+                { "value": 1, "color": "green" }
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": { "calcs": ["lastNotNull"] },
+          "colorMode": "background",
+          "graphMode": "none",
+          "orientation": "horizontal"
+        }
+      },
+      {
+        "id": 2,
+        "title": "HTTP 요청 수 (초당)",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+        "datasource": { "type": "prometheus" },
+        "targets": [
+          {
+            "expr": "rate(http_server_requests_seconds_count{job=\"ordersense-services\"}[1m])",
+            "legendFormat": "{{instance}} - {{method}} {{uri}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "HTTP 응답 시간 (평균)",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+        "datasource": { "type": "prometheus" },
+        "targets": [
+          {
+            "expr": "rate(http_server_requests_seconds_sum{job=\"ordersense-services\"}[1m]) / rate(http_server_requests_seconds_count{job=\"ordersense-services\"}[1m])",
+            "legendFormat": "{{instance}} - {{uri}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "HTTP 에러율 (4xx, 5xx)",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+        "datasource": { "type": "prometheus" },
+        "targets": [
+          {
+            "expr": "rate(http_server_requests_seconds_count{job=\"ordersense-services\", status=~\"4..|5..\"}[1m])",
+            "legendFormat": "{{instance}} - {{status}} {{uri}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "color": { "mode": "palette-classic" }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "JVM 메모리 사용량",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+        "datasource": { "type": "prometheus" },
+        "targets": [
+          {
+            "expr": "jvm_memory_used_bytes{job=\"ordersense-services\", area=\"heap\"}",
+            "legendFormat": "{{instance}} - Heap Used"
+          },
+          {
+            "expr": "jvm_memory_max_bytes{job=\"ordersense-services\", area=\"heap\"}",
+            "legendFormat": "{{instance}} - Heap Max"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "bytes"
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "JVM 스레드 수",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+        "datasource": { "type": "prometheus" },
+        "targets": [
+          {
+            "expr": "jvm_threads_live_threads{job=\"ordersense-services\"}",
+            "legendFormat": "{{instance}} - Live"
+          },
+          {
+            "expr": "jvm_threads_peak_threads{job=\"ordersense-services\"}",
+            "legendFormat": "{{instance}} - Peak"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Kafka Producer - 전송 성공률",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+        "datasource": { "type": "prometheus" },
+        "targets": [
+          {
+            "expr": "rate(kafka_producer_record_send_total{job=\"ordersense-services\"}[1m])",
+            "legendFormat": "{{instance}} - 전송"
+          },
+          {
+            "expr": "rate(kafka_producer_record_error_total{job=\"ordersense-services\"}[1m])",
+            "legendFormat": "{{instance}} - 에러"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "ops"
+          }
+        }
+      },
+      {
+        "id": 8,
+        "title": "DB 커넥션 풀",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 28 },
+        "datasource": { "type": "prometheus" },
+        "targets": [
+          {
+            "expr": "hikaricp_connections_active{job=\"ordersense-services\"}",
+            "legendFormat": "{{instance}} - Active"
+          },
+          {
+            "expr": "hikaricp_connections_idle{job=\"ordersense-services\"}",
+            "legendFormat": "{{instance}} - Idle"
+          },
+          {
+            "expr": "hikaricp_connections_pending{job=\"ordersense-services\"}",
+            "legendFormat": "{{instance}} - Pending"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "GC 횟수 (초당)",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 28 },
+        "datasource": { "type": "prometheus" },
+        "targets": [
+          {
+            "expr": "rate(jvm_gc_pause_seconds_count{job=\"ordersense-services\"}[1m])",
+            "legendFormat": "{{instance}} - {{action}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "ops"
+          }
+        }
+      },
+      {
+        "id": 10,
+        "title": "CPU 사용률",
+        "type": "gauge",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 36 },
+        "datasource": { "type": "prometheus" },
+        "targets": [
+          {
+            "expr": "process_cpu_usage{job=\"ordersense-services\"}",
+            "legendFormat": "{{instance}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percentunit",
+            "min": 0,
+            "max": 1,
+            "thresholds": {
+              "steps": [
+                { "value": null, "color": "green" },
+                { "value": 0.7, "color": "yellow" },
+                { "value": 0.9, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 11,
+        "title": "Logback 에러 로그 수",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 36 },
+        "datasource": { "type": "prometheus" },
+        "targets": [
+          {
+            "expr": "rate(logback_events_total{job=\"ordersense-services\", level=\"error\"}[1m])",
+            "legendFormat": "{{instance}} - ERROR"
+          },
+          {
+            "expr": "rate(logback_events_total{job=\"ordersense-services\", level=\"warn\"}[1m])",
+            "legendFormat": "{{instance}} - WARN"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "ops"
+          }
+        }
+      }
+    ],
+    "schemaVersion": 39
+  },
+  "overwrite": true
+}

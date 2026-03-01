@@ -35,11 +35,21 @@ spring:
       retries: 3
     consumer:
       group-id: order-service-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       auto-offset-reset: earliest
       properties:
-        spring.json.trusted.packages: "com.lima.orderservice"
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: java.util.HashMap
+
+# JWT 설정
+jwt:
+  secret: ${JWT_SECRET:ordersense-jwt-secret-key-for-development-only-must-be-at-least-256-bits-long!!}
+  access-token-expiration: 1800000
+  refresh-token-expiration: 604800000
 
 # Actuator 설정 (Prometheus 메트릭)
 management:

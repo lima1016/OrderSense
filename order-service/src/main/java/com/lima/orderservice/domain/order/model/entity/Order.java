@@ -136,4 +136,8 @@ public class Order {
     items.add(item);
     item.setOrder(this);
   }
+
+  public void updateTotalAmount(BigDecimal totalAmount) {
+    this.totalAmount = totalAmount;
+  }
 }
