@@ -1,0 +1,67 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/auth/**
+
+        - id: order-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/orders/**, /api/customers/**
+
+        - id: rider-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/riders/**
+
+        - id: restaurant-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/restaurants/**, /api/menus/**
+
+        - id: payment-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/payments/**
+
+        - id: action-executor-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/actions/**
+
+        - id: analytics-engine
+          uri: http://localhost:8086
+          predicates:
+            - Path=/api/analytics/**
+
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+
+jwt:
+  secret: ${JWT_SECRET:ordersense-jwt-secret-key-for-development-only-must-be-at-least-256-bits-long!!}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG

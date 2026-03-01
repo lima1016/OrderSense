@@ -41,6 +41,12 @@ spring:
       properties:
         spring.json.trusted.packages: "com.lima.orderservice"
 
+# JWT 설정
+jwt:
+  secret: ${JWT_SECRET:ordersense-jwt-secret-key-for-development-only-must-be-at-least-256-bits-long!!}
+  access-token-expiration: 1800000
+  refresh-token-expiration: 604800000
+
 # Actuator 설정 (Prometheus 메트릭)
 management:
   endpoints:

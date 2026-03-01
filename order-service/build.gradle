@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    // webflux 제거 - root build.gradle의 spring-boot-starter-web(MVC) 사용
 }
 
 sentry {
