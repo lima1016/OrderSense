@@ -333,29 +333,19 @@ REJECTION_RATE_THRESHOLD = 0.2      # 가맹점 거부율 임계값
 
 ---
 
-## 대시보드
+## 화면
+<img width="455" height="479" alt="image" src="https://github.com/user-attachments/assets/f6da48a5-d4f6-4298-ac29-30fd33044bdc" />
 
-Next.js 14 (App Router) 기반 실시간 운영 대시보드
+<img width="1911" height="469" alt="image" src="https://github.com/user-attachments/assets/0315e7dc-252d-4625-800b-6d61a16ab26e" />
 
-### 페이지 구성
+<img width="439" height="408" alt="image" src="https://github.com/user-attachments/assets/b17a049c-5351-4a85-a6cb-c75b1dd9dc2a" />
 
-| 페이지 | 경로 | 기능 |
-|-------|------|------|
-| 로그인/회원가입 | `/login`, `/signup` | JWT 기반 인증 |
-| 메인 대시보드 | `/dashboard` | 실시간 통계, 지역별 차트, 이상 목록 |
-| 주문 관리 | `/dashboard/orders` | 주문 테이블, 상태별 차트 |
-| 분석 | `/dashboard/analytics` | 수요 예측 차트, 이상 타임라인, 이탈 위험 테이블 |
-| 모니터링 | `/dashboard/monitoring` | 서비스 헬스체크, 액션 로그 |
+<img width="1887" height="469" alt="image" src="https://github.com/user-attachments/assets/b7240abd-7691-4a09-a5b7-5d514e2f472c" />
 
-### 실시간 데이터 갱신 (SWR Polling)
+<img width="1894" height="871" alt="image" src="https://github.com/user-attachments/assets/1af61156-4888-4da0-82a8-0616cb9e73ae" />
 
-| 컴포넌트 | API | 갱신 주기 |
-|---------|-----|----------|
-| 수요 예측 차트 | `/api/analytics/demand` | 30초 |
-| 이상 타임라인 | `/api/analytics/anomalies` | 15초 |
-| 이탈 위험 테이블 | `/api/analytics/churn` | 60초 |
+<img width="1892" height="654" alt="image" src="https://github.com/user-attachments/assets/d2462cc7-99d2-44c6-a58d-13d96f6ca0e9" />
 
----
 
 ## Kafka 이벤트 아키텍처
 
@@ -408,62 +398,6 @@ Kafka (7개 토픽) → Logstash → Elasticsearch → Kibana
 - 100% 트레이스 샘플링
 
 ---
-
-## 실행 방법
-
-### 사전 요구사항
-
-- Java 21
-- Python 3.11+
-- Node.js 18+
-- Docker & Docker Compose
-
-### 1. 인프라 실행
-
-```bash
-docker compose up -d
-```
-
-### 2. 마이크로서비스 실행
-
-```bash
-# 전체 빌드
-./gradlew build
-
-# 각 서비스 실행 (별도 터미널)
-./gradlew :order-service:bootRun
-./gradlew :rider-service:bootRun
-./gradlew :restaurant-service:bootRun
-./gradlew :payment-service:bootRun
-./gradlew :action-executor-service:bootRun
-./gradlew :api-gateway:bootRun
-```
-
-### 3. Analytics Engine 실행
-
-```bash
-cd analytics-engine
-pip install -r requirements.txt
-python main.py
-```
-
-### 4. Dashboard 실행
-
-```bash
-cd dashboard
-npm install
-npm run dev
-```
-
-### 5. 테스트 데이터 시드
-
-```bash
-# DB 초기 데이터
-psql -U ordersense -d ordersense -f scripts/mock-data.sql
-
-# Kafka 샘플 이벤트
-bash scripts/seed-kafka-events.sh
-```
 
 ### 포트 매핑
 
