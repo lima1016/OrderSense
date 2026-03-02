@@ -2,6 +2,7 @@
 
 배달 플랫폼의 비즈니스 메트릭을 실시간으로 모니터링하고, 이상을 탐지하며, 원인을 분석하여 자동으로 대응하는 지능형 운영 시스템
 
+https://github.com/user-attachments/assets/e4a0a245-0d5a-4dc3-84f0-4e350b5160f4
 
 ### 핵심 데이터 흐름
 
@@ -303,9 +304,4 @@ Kafka (7개 토픽) → Logstash → Elasticsearch → Kibana
 - 100% 트레이스 샘플링
 
 ---
-
-## 화면
-
-https://github.com/user-attachments/assets/e4a0a245-0d5a-4dc3-84f0-4e350b5160f4
-
 
