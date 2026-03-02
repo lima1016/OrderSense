@@ -33,6 +33,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
     private final KafkaProducerService kafkaProducerService;
+    private final OrderSearchService orderSearchService;
 
     @Transactional
     public OrderResponse createOrder(OrderCreateRequest request) {
@@ -63,6 +64,7 @@ public class OrderService {
         log.info("주문 생성 완료: orderId={}, region={}, totalAmount={}", savedOrder.getId(), savedOrder.getRegion(), totalAmount);
 
         kafkaProducerService.sendOrderEvent(OrderEventDto.createOrderCreated(savedOrder));
+        orderSearchService.indexOrder(savedOrder);
 
         return OrderResponse.from(savedOrder);
     }
@@ -102,6 +104,7 @@ public class OrderService {
 
         log.info("주문 상태 변경: orderId={}, {} -> {}", orderId, previousStatus, newStatus);
         kafkaProducerService.sendOrderEvent(OrderEventDto.createOrderStatusChanged(saved, previousStatus));
+        orderSearchService.indexOrder(saved);
 
         return OrderResponse.from(saved);
     }
@@ -116,6 +119,7 @@ public class OrderService {
 
         log.info("주문 취소: orderId={}, reason={}", orderId, reason);
         kafkaProducerService.sendOrderEvent(OrderEventDto.createOrderCancelled(saved));
+        orderSearchService.indexOrder(saved);
 
         return OrderResponse.from(saved);
     }
@@ -129,6 +133,7 @@ public class OrderService {
         Order saved = orderRepository.save(order);
 
         log.info("라이더 배정: orderId={}, riderId={}", orderId, riderId);
+        orderSearchService.indexOrder(saved);
         return OrderResponse.from(saved);
     }
 

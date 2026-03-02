@@ -1,5 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
+from datetime import datetime
 
 import uvicorn
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -120,9 +121,32 @@ def get_stats():
 
 
 @app.get("/api/analytics/anomalies")
-def get_anomalies(limit: int = Query(default=50, ge=1, le=200)):
-    """최근 탐지된 이상 목록"""
-    anomalies = event_store.get_recent_anomalies(limit=limit)
+def get_anomalies(
+    limit: int = Query(default=50, ge=1, le=200),
+    start_date: str | None = Query(default=None, alias="startDate"),
+    end_date: str | None = Query(default=None, alias="endDate"),
+):
+    """최근 탐지된 이상 목록 (선택적 날짜 범위 필터)"""
+    parsed_start = None
+    parsed_end = None
+
+    if start_date:
+        try:
+            parsed_start = datetime.fromisoformat(start_date)
+        except ValueError:
+            pass
+
+    if end_date:
+        try:
+            parsed_end = datetime.fromisoformat(end_date)
+        except ValueError:
+            pass
+
+    anomalies = event_store.get_recent_anomalies(
+        limit=limit,
+        start_date=parsed_start,
+        end_date=parsed_end,
+    )
     return {"count": len(anomalies), "anomalies": anomalies}
 
 

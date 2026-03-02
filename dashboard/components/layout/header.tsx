@@ -1,14 +1,14 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Search } from "lucide-react";
+import { Shield } from "lucide-react";
 import { useAuth } from "@/components/providers/auth-provider";
 
 const pageTitles: Record<string, string> = {
-  "/": "Dashboard",
-  "/orders": "Orders",
-  "/analytics": "Analytics",
-  "/monitoring": "Monitoring",
+  "/dashboard": "Dashboard",
+  "/dashboard/orders": "Orders",
+  "/dashboard/analytics": "Analytics",
+  "/dashboard/monitoring": "Monitoring",
 };
 
 export function Header() {
@@ -22,12 +22,6 @@ export function Header() {
         <h2 className="text-[15px] font-semibold text-slate-900">{title}</h2>
       </div>
       <div className="flex items-center gap-3">
-        {/* Search */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-400 text-sm">
-          <Search size={14} />
-          <span className="hidden sm:inline text-xs">Search...</span>
-          <kbd className="hidden sm:inline text-[10px] bg-white rounded px-1.5 py-0.5 border border-slate-200 text-slate-400 ml-4">/</kbd>
-        </div>
         {/* Live */}
         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200">
           <span className="relative flex h-2 w-2">
@@ -36,6 +30,21 @@ export function Header() {
           </span>
           <span className="text-[11px] font-medium text-emerald-700">Live</span>
         </div>
+        {/* User badge */}
+        {user && (
+          <div className="flex items-center gap-2 pl-3 border-l border-slate-200">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center">
+              <span className="text-[11px] font-bold text-white">{user.name.charAt(0).toUpperCase()}</span>
+            </div>
+            <div className="hidden sm:block">
+              <p className="text-[12px] font-semibold text-slate-800 leading-none">{user.name}</p>
+              <div className="flex items-center gap-1 mt-0.5">
+                <Shield size={9} className={user.role === "ADMIN" ? "text-amber-500" : "text-blue-400"} />
+                <span className="text-[10px] text-slate-400">{user.role}</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );

@@ -72,9 +72,35 @@ class EventStore:
         with self._lock:
             self.detected_anomalies.append(anomaly)
 
-    def get_recent_anomalies(self, limit: int = 50) -> list[dict]:
+    def get_recent_anomalies(
+        self,
+        limit: int = 50,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
+    ) -> list[dict]:
         with self._lock:
-            return list(reversed(self.detected_anomalies[-limit:]))
+            anomalies = self.detected_anomalies
+
+            if start_date or end_date:
+                filtered = []
+                for a in anomalies:
+                    detected_at_str = a.get("detectedAt")
+                    if not detected_at_str:
+                        continue
+                    try:
+                        detected_at = datetime.fromisoformat(
+                            detected_at_str.replace("Z", "+00:00")
+                        ).replace(tzinfo=None)
+                    except (ValueError, TypeError):
+                        continue
+                    if start_date and detected_at < start_date:
+                        continue
+                    if end_date and detected_at > end_date:
+                        continue
+                    filtered.append(a)
+                anomalies = filtered
+
+            return list(reversed(anomalies[-limit:]))
 
     def cleanup_old_events(self):
         """보관 기간이 지난 이벤트 정리"""

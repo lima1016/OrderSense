@@ -10,6 +10,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+ARG API_GATEWAY_URL=http://host.docker.internal:8080
+ENV API_GATEWAY_URL=${API_GATEWAY_URL}
 RUN mkdir -p public && npm run build
 
 FROM base AS runner
