@@ -336,11 +336,11 @@ REJECTION_RATE_THRESHOLD = 0.2      # 가맹점 거부율 임계값
 ## 화면
 <img width="455" height="479" alt="image" src="https://github.com/user-attachments/assets/f6da48a5-d4f6-4298-ac29-30fd33044bdc" />
 
-<img width="1673" height="510" alt="image" src="https://github.com/user-attachments/assets/4b04dd63-3b88-41ee-8968-ee137bde2c18" />
+<img width="1911" height="469" alt="image" src="https://github.com/user-attachments/assets/0315e7dc-252d-4625-800b-6d61a16ab26e" />
 
 <img width="1887" height="469" alt="image" src="https://github.com/user-attachments/assets/b7240abd-7691-4a09-a5b7-5d514e2f472c" />
 
-<img width="3109" height="1637" alt="image" src="https://github.com/user-attachments/assets/46512f4b-d146-44f4-a029-963f88d0335e" />
+<img width="1894" height="871" alt="image" src="https://github.com/user-attachments/assets/1af61156-4888-4da0-82a8-0616cb9e73ae" />
 
 <img width="1892" height="654" alt="image" src="https://github.com/user-attachments/assets/d2462cc7-99d2-44c6-a58d-13d96f6ca0e9" />
 
