@@ -2,62 +2,6 @@
 
 배달 플랫폼의 비즈니스 메트릭을 실시간으로 모니터링하고, 이상을 탐지하며, 원인을 분석하여 자동으로 대응하는 지능형 운영 시스템
 
-## 목차
-
-- [아키텍처](#아키텍처)
-- [기술 스택](#기술-스택)
-- [마이크로서비스 구성](#마이크로서비스-구성)
-- [이상탐지 엔진](#이상탐지-엔진-analytics-engine)
-- [대시보드](#대시보드)
-- [Kafka 이벤트 아키텍처](#kafka-이벤트-아키텍처)
-- [모니터링 및 옵저버빌리티](#모니터링-및-옵저버빌리티)
-- [실행 방법](#실행-방법)
-- [API 명세](#api-명세)
-
----
-
-## 아키텍처
-
-```
-                          ┌─────────────────────────────────┐
-                          │        Dashboard (Next.js)      │
-                          │          :3001                  │
-                          └────────────┬────────────────────┘
-                                       │
-                          ┌────────────▼────────────────────┐
-                          │     API Gateway (SCG) :8080     │
-                          │    JWT 인증 / 라우팅 / CORS     │
-                          └────────────┬────────────────────┘
-                                       │
-          ┌──────────┬─────────┬───────┴────┬──────────┐
-          ▼          ▼         ▼            ▼          ▼
-   ┌───────────┐┌────────┐┌──────────┐┌─────────┐┌──────────┐
-   │  Order    ││ Rider  ││Restaurant││ Payment ││ Action   │
-   │  Service  ││ Service││ Service  ││ Service ││ Executor │
-   │  :8081    ││ :8082  ││ :8083    ││ :8084   ││ :8085    │
-   └─────┬─────┘└───┬────┘└────┬─────┘└────┬────┘└────┬─────┘
-         │          │          │           │          │
-         └──────────┴──────────┴─────┬─────┴──────────┘
-                                     │
-                          ┌──────────▼──────────┐
-                          │   Apache Kafka      │
-                          │   (KRaft mode)      │
-                          │   :9092             │
-                          └──────────┬──────────┘
-                                     │
-                    ┌────────────────┬┴───────────────┐
-                    ▼                ▼                 ▼
-         ┌──────────────┐ ┌──────────────┐  ┌──────────────┐
-         │  Analytics   │ │  Logstash    │  │  Kafka UI    │
-         │  Engine (Py) │ │  → ES → Kib  │  │  :8090       │
-         │  :8086       │ │              │  └──────────────┘
-         └──────────────┘ └──────────────┘
-
-    ┌───────────┐  ┌───────────┐  ┌──────────────────────┐
-    │ PostgreSQL│  │   Redis   │  │ Prometheus → Grafana  │
-    │ :5432     │  │   :6379   │  │ :9090        :3000    │
-    └───────────┘  └───────────┘  └──────────────────────┘
-```
 
 ### 핵심 데이터 흐름
 
@@ -320,46 +264,7 @@ prediction = Weighted Moving Average × 추세 보정 계수
 | 결제 실패 | `count / 20` | 20건 이상 |
 | 고객 이탈 | `frequency_drop` | 100% 감소 |
 
-### 설정값 (config.py)
-
-```python
-ANALYSIS_INTERVAL_SECONDS = 60      # 분석 주기
-EVENT_RETENTION_HOURS = 24          # 이벤트 보관 시간
-ANOMALY_Z_SCORE_THRESHOLD = 2.0     # Z-Score 임계값
-DELIVERY_DELAY_THRESHOLD = 1.5      # 배달 지연 비율 임계값
-CHURN_FREQUENCY_DROP = 0.5          # 이탈 판별 빈도 감소율
-REJECTION_RATE_THRESHOLD = 0.2      # 가맹점 거부율 임계값
-```
-
 ---
-
-## 화면
-<img width="455" height="479" alt="image" src="https://github.com/user-attachments/assets/f6da48a5-d4f6-4298-ac29-30fd33044bdc" />
-
-<img width="1911" height="469" alt="image" src="https://github.com/user-attachments/assets/0315e7dc-252d-4625-800b-6d61a16ab26e" />
-
-<img width="439" height="408" alt="image" src="https://github.com/user-attachments/assets/b17a049c-5351-4a85-a6cb-c75b1dd9dc2a" />
-
-<img width="1887" height="469" alt="image" src="https://github.com/user-attachments/assets/b7240abd-7691-4a09-a5b7-5d514e2f472c" />
-
-<img width="1894" height="871" alt="image" src="https://github.com/user-attachments/assets/1af61156-4888-4da0-82a8-0616cb9e73ae" />
-
-<img width="1892" height="654" alt="image" src="https://github.com/user-attachments/assets/d2462cc7-99d2-44c6-a58d-13d96f6ca0e9" />
-
-
-## Kafka 이벤트 아키텍처
-
-### 토픽 구성
-
-| 토픽 | Producer | Consumer | 이벤트 타입 |
-|------|----------|----------|-----------|
-| `orders` | Order Service | Restaurant, Rider, Payment, Analytics | ORDER_CREATED, ORDER_CANCELLED, ORDER_STATUS_CHANGED |
-| `deliveries` | Order, Rider Service | Order, Analytics | RIDER_ASSIGNED, RIDER_PICKED_UP, DELIVERY_STARTED, DELIVERY_COMPLETED |
-| `riders` | Rider Service | Analytics | LOCATION_UPDATED, 상태 변경 |
-| `restaurants` | Restaurant Service | Order, Analytics | ORDER_ACCEPTED, ORDER_REJECTED, ORDER_PREPARING, ORDER_READY |
-| `payments` | Payment Service | Order, Analytics | PAYMENT_COMPLETED, PAYMENT_FAILED, PAYMENT_REFUNDED |
-| `anomalies` | Analytics Engine | Action Executor, Logstash | ORDER_DROP, DELIVERY_DELAY, CUSTOMER_CHURN, REJECTION_SPIKE |
-| `actions` | Action Executor | Logstash | 액션 실행 결과 |
 
 ### 역직렬화 설정
 
@@ -399,82 +304,8 @@ Kafka (7개 토픽) → Logstash → Elasticsearch → Kibana
 
 ---
 
-### 포트 매핑
+## 화면
 
-| 포트 | 서비스 |
-|------|--------|
-| 3000 | Grafana (admin / admin123) |
-| 3001 | Dashboard (Next.js) |
-| 5432 | PostgreSQL (ordersense / ordersense123) |
-| 5601 | Kibana |
-| 6379 | Redis |
-| 8080 | API Gateway |
-| 8081 | Order Service |
-| 8082 | Rider Service |
-| 8083 | Restaurant Service |
-| 8084 | Payment Service |
-| 8085 | Action Executor Service |
-| 8086 | Analytics Engine |
-| 8090 | Kafka UI |
-| 9090 | Prometheus |
-| 9092 | Kafka |
-| 9200 | Elasticsearch |
+https://github.com/user-attachments/assets/e4a0a245-0d5a-4dc3-84f0-4e350b5160f4
 
----
 
-## API 명세
-
-각 서비스 실행 후 Swagger UI에서 API 문서를 확인할 수 있습니다.
-
-```
-http://localhost:{port}/swagger-ui/index.html
-```
-
-### Analytics Engine API
-
-| Method | Endpoint | 설명 |
-|--------|----------|------|
-| GET | `/health` | 헬스체크 (Kafka Consumer, Scheduler 상태) |
-| GET | `/api/analytics/stats` | 지역별 현재 메트릭 집계 |
-| GET | `/api/analytics/anomalies?limit=50` | 최근 탐지된 이상 목록 |
-| GET | `/api/analytics/demand?region=` | 지역별 수요 예측 |
-| GET | `/api/analytics/churn` | 이탈 위험 고객 목록 |
-
----
-
-## 프로젝트 구조
-
-```
-OrderSense/
-├── api-gateway/                    # Spring Cloud Gateway
-├── order-service/                  # 주문 관리 + 인증
-│   └── domain/
-│       ├── auth/                   # 로그인, 회원가입, JWT
-│       └── order/                  # 주문, 고객 CRUD
-├── rider-service/                  # 라이더 관리 + WebSocket 위치추적
-├── restaurant-service/             # 가맹점, 메뉴 관리 + Quartz 스케줄러
-├── payment-service/                # 결제 처리
-├── action-executor-service/        # 이상 대응 자동 실행 + AOP 로깅
-├── analytics-engine/               # Python 분석 엔진
-│   ├── analyzers/
-│   │   ├── anomaly_detector.py     # Z-Score, 비율비교, 임계값 탐지
-│   │   ├── root_cause_classifier.py# 규칙 기반 원인분류
-│   │   ├── churn_predictor.py      # 주문 빈도 기반 이탈예측
-│   │   └── demand_forecaster.py    # 가중이동평균 수요예측
-│   ├── kafka/                      # Consumer (5토픽) / Producer (anomalies)
-│   ├── storage/event_store.py      # 인메모리 이벤트 저장소
-│   ├── models/dto.py               # Pydantic 데이터 모델
-│   ├── config.py                   # 분석 임계값 설정
-│   └── main.py                     # FastAPI 앱 + 스케줄러
-├── dashboard/                      # Next.js 14 대시보드
-│   ├── app/
-│   │   ├── (auth)/                 # 로그인, 회원가입 페이지
-│   │   └── dashboard/              # 메인, 주문, 분석, 모니터링 페이지
-│   ├── components/                 # UI 컴포넌트
-│   └── lib/                        # API 클라이언트, 타입, 유틸
-├── conf/                           # Prometheus, Logstash, Grafana 설정
-├── scripts/                        # DB 시드 SQL, Kafka 이벤트 시드 스크립트
-├── docker-compose.yml              # 인프라 컨테이너 구성
-├── build.gradle                    # Gradle 멀티 모듈 빌드
-└── settings.gradle
-```
