@@ -4,6 +4,7 @@ import com.lima.orderservice.domain.order.model.dto.OrderCreateRequest;
 import com.lima.orderservice.domain.order.model.dto.OrderResponse;
 import com.lima.orderservice.domain.order.model.dto.OrderStatsResponse;
 import com.lima.orderservice.domain.order.model.type.OrderStatus;
+import com.lima.orderservice.domain.order.service.OrderSearchService;
 import com.lima.orderservice.domain.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -20,6 +22,7 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderSearchService orderSearchService;
 
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody OrderCreateRequest request) {
@@ -65,6 +68,22 @@ public class OrderController {
             @PathVariable Long orderId,
             @RequestParam Long riderId) {
         return ResponseEntity.ok(orderService.assignRider(orderId, riderId));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> searchOrders(
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String region,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return ResponseEntity.ok(orderSearchService.search(q, status, region, page, size));
+    }
+
+    @PostMapping("/reindex")
+    public ResponseEntity<Map<String, Object>> reindexAll() {
+        int count = orderSearchService.reindexAll();
+        return ResponseEntity.ok(Map.of("message", "리인덱싱 완료", "count", count));
     }
 
     @GetMapping("/stats")

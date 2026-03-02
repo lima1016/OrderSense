@@ -5,7 +5,7 @@ KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
 KAFKA_GROUP_ID = "analytics-engine-group"
 
 # 소비할 토픽
-CONSUME_TOPICS = ["orders", "deliveries", "riders", "restaurants", "payments"]
+CONSUME_TOPICS = ["orders", "deliveries", "riders", "restaurants", "payments", "anomalies"]
 
 # 발행할 토픽
 ANOMALY_TOPIC = "anomalies"

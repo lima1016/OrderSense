@@ -16,6 +16,7 @@ TOPIC_HANDLER_MAP = {
     "riders": "add_rider_event",
     "restaurants": "add_restaurant_event",
     "payments": "add_payment_event",
+    "anomalies": "add_anomaly",
 }
 
 

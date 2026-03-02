@@ -20,7 +20,14 @@
       "Bash(rm:*)",
       "Bash(docker restart:*)",
       "Bash(docker ps:*)",
-      "Bash(bash:*)"
+      "Bash(bash:*)",
+      "Bash(docker compose:*)",
+      "Bash(./gradlew :order-service:compileJava:*)",
+      "Bash(./gradlew :order-service:bootJar:*)",
+      "Bash(python:*)",
+      "Bash(cmd:*)",
+      "Bash(./gradlew :order-service:bootRun:*)",
+      "Bash(./gradlew :api-gateway:bootRun:*)"
     ]
   }
 }
