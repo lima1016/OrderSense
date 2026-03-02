@@ -338,6 +338,8 @@ REJECTION_RATE_THRESHOLD = 0.2      # 가맹점 거부율 임계값
 
 <img width="1911" height="469" alt="image" src="https://github.com/user-attachments/assets/0315e7dc-252d-4625-800b-6d61a16ab26e" />
 
+<img width="439" height="408" alt="image" src="https://github.com/user-attachments/assets/b17a049c-5351-4a85-a6cb-c75b1dd9dc2a" />
+
 <img width="1887" height="469" alt="image" src="https://github.com/user-attachments/assets/b7240abd-7691-4a09-a5b7-5d514e2f472c" />
 
 <img width="1894" height="871" alt="image" src="https://github.com/user-attachments/assets/1af61156-4888-4da0-82a8-0616cb9e73ae" />
